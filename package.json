@@ -20,5 +20,8 @@
 	"devDependencies": {
 		"dotenv": "^8.2.0",
 		"webpack": "^4.46.0"
+	},
+	"dependencies": {
+		"lodash.unescape": "^4.0.1"
 	}
 }
