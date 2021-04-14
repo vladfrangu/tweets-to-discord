@@ -1,10 +1,10 @@
-name = "fuzznet_tweets-to-discord_fuzznetworld"
+name = "fuzznet_tweets-to-discord_furriesconfess"
 type = "webpack"
 account_id = "254589cc33c8f087773c95cf62a5a54e"
 workers_dev = true
 webpack_config = "webpack.config.js"
 kv_namespaces = [
-    { binding = "TWEETS_TO_DISCORD_LAST_TWEET", id = "f22f1aee1f3642bcaa81eaf306528577", preview_id = "cefa4157f5bc4eaebb7765833b65e571" }
+    { binding = "TWEETS_TO_DISCORD_LAST_TWEET", id = "f22f1aee1f3642bcaa81eaf306528577", preview_id = "af2bc53797264f5582346dfbb0f3e86a" }
 ]
 
 [triggers]
@@ -12,5 +12,5 @@ crons = ["*/5 * * * *"]
 
 [env.production]
 kv_namespaces = [
-    { binding = "TWEETS_TO_DISCORD_LAST_TWEET", id = "934e7b2a5e1345f0a9e7cf8d6e83cfff" }
+    { binding = "TWEETS_TO_DISCORD_LAST_TWEET", id = "c89d3457aa6a45d1b8f70eff5fb1429d" }
 ]
