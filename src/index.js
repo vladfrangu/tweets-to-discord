@@ -84,19 +84,17 @@ const processTweet = (tweet, includes) => {
 	const refType = refTweet ? tweet.referenced_tweets[0].type : null;
 	const refAuthor = refTweet ? includes.users.find((inclUser) => inclUser.id === refTweet.author_id) : null;
 
-	if (refType === 'replied_to') return null;
+	if (refType === 'replied_to' || refType === 'retweeted') return null;
 
 	// Determine the Discord title
-	const title = refType === 'retweeted' ? '🔁 Retweeted' : refType === 'quoted' ? '📝 Quoted' : '💬 Tweeted';
+	const title = refType === 'quoted' ? '📝 Quoted' : '💬 Tweeted';
 
 	// Determine what content to use
-	const content = refType === 'retweeted' ? refTweet.text : tweet.text;
+	const content = tweet.text;
 
 	// Determine what links to reference
 	const links =
-		refType === 'retweeted'
-			? `https://twitter.com/${refAuthor.username}/status/${refTweet.id}`
-			: refType === 'quoted'
+		refType === 'quoted'
 			? `https://twitter.com/${author.username}/status/${tweet.id}\nQuoting https://twitter.com/${refAuthor.username}/status/${refTweet.id}`
 			: `https://twitter.com/${author.username}/status/${tweet.id}`;
 
