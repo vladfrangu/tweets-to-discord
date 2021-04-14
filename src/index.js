@@ -116,7 +116,7 @@ const processTweet = (tweet, includes) => {
 	};
 
 	// Post to Discord
-	return postDiscordTweet(title, embed, links, author.username, author.profile_image_url);
+	return postDiscordTweet(title, embed, links, author.name, author.profile_image_url);
 };
 
 // Mirror latest tweets from Twitter to Discord
