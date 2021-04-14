@@ -1,3 +1,5 @@
+const unescape = require('lodash.unescape');
+
 // Util to send a text response
 const textResponse = (content) =>
 	new Response(content, {
@@ -38,14 +40,15 @@ const fetchLatestTweets = (since) => {
 };
 
 // Post tweet information to Discord
-const postDiscordTweet = async (type, content, links, username, avatar) => {
+const postDiscordTweet = async (type, embed, links, username, avatar) => {
 	const res = await fetch(process.env.DISCORD_WEBHOOK, {
 		method: 'POST',
 		headers: { 'Content-type': 'application/json' },
 		body: JSON.stringify({
-			content: `**${type}**\n\n${quoteText(escapeMarkdown(content))}\n\n${suppressLinks(links)}`,
+			content: `**${type}**\n\n${suppressLinks(links)}`,
 			username,
 			avatar_url: avatar,
+			embeds: [embed],
 		}),
 	});
 
@@ -56,12 +59,12 @@ const postDiscordTweet = async (type, content, links, username, avatar) => {
 			console.log(`Ratelimit hit, retrying after ${retryAfter} seconds`);
 			await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
 
-			return postDiscordTweet(type, content, links, username, avatar);
+			return postDiscordTweet(type, embed, links, username, avatar);
 		} else {
 			console.log(`Post failed, probably due to network errors, waiting 5s and trying again`);
 			await new Promise((resolve) => setTimeout(resolve, 5000));
 
-			return postDiscordTweet(type, content, links, username, avatar);
+			return postDiscordTweet(type, embed, links, username, avatar);
 		}
 	}
 
@@ -97,8 +100,23 @@ const processTweet = (tweet, includes) => {
 			? `https://twitter.com/${author.username}/status/${tweet.id}\nQuoting https://twitter.com/${refAuthor.username}/status/${refTweet.id}`
 			: `https://twitter.com/${author.username}/status/${tweet.id}`;
 
+	const embed = {
+		color: 0x1da1f2,
+		author: {
+			name: author.name,
+			icon_url: author.profile_image_url,
+			url: `https://twitter.com/${author.username}`,
+		},
+		footer: {
+			text: 'Twitter',
+			icon_url: 'https://abs.twimg.com/icons/apple-touch-icon-192x192.png',
+		},
+		timestamp: tweet.created_at,
+		description: escapeMarkdown(unescape(content)),
+	};
+
 	// Post to Discord
-	return postDiscordTweet(title, content, links, author.username, author.profile_image_url);
+	return postDiscordTweet(title, embed, links, author.username, author.profile_image_url);
 };
 
 // Mirror latest tweets from Twitter to Discord
