@@ -84,7 +84,7 @@ const processTweet = (tweet, includes) => {
 	const refType = refTweet ? tweet.referenced_tweets[0].type : null;
 	const refAuthor = refTweet ? includes.users.find((inclUser) => inclUser.id === refTweet.author_id) : null;
 
-	if (refType === 'replied_to' || refType === 'retweeted') return null;
+	if (refType === 'replied_to' || refType === 'retweeted') return Promise.resolve();
 
 	// Determine the Discord title
 	const title = refType === 'quoted' ? '📝 Quoted' : '💬 Tweeted';
@@ -134,7 +134,7 @@ const mirrorLatestTweets = async () => {
 
 	// Process each tweet
 	for (const tweet of tweets) {
-		console.log(await processTweet(tweet, data.includes).then((res) => res.text()));
+		console.log(await processTweet(tweet, data.includes).then((res) => (res ? res.text() : 'Skipped tweet')));
 
 		// Store this as the most recent tweet we've processed
 		await TWEETS_TO_DISCORD_LAST_TWEET.put('latest_id', tweet.id);
